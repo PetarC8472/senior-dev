@@ -2,7 +2,7 @@
 	require_once("dbapi.php");
 	require_once("cleanXML.php");
 	
-	$result = getContent($pageID);
+	$result = getPinData();
 	$fieldArray = array();
 	
 	$dom = new DOMDocument;
@@ -18,23 +18,30 @@
 	
 	
 		while ($tableRow = $result->fetch_assoc()) {
-		array_push($fieldArray, $tableRow['dataType']);
-		array_push($fieldArray, $tableRow['text']);
+		array_push($fieldArray, $tableRow['name']);
+		array_push($fieldArray, $tableRow['content']);
+		array_push($fieldArray, $tableRow['image']);
 		}
 		
-		for($i = 0; $i<count($fieldArray); $i+=2) {
+		for($i = 0; $i<count($fieldArray); $i+=3) {
 				$cursor = $i+1;
+				$cursor2 = $i+2;
 				$clean1 = cleanXML($fieldArray[$i]);
 				$clean2 = cleanXML($fieldArray[$cursor]);
+				$clean3 = cleanXML($fieldArray[$cursor2]);
 				$template = $dom->createDocumentFragment();
 				
 				
-				if ($clean1 === 'Large_Title'){
-				   $template->appendXML("<div class = '{$clean1}'><h1>{$clean2}</h1></div>");
-				   $template->appendXML("<br />");
+				$template->appendXML("<div class = 'name'><h1>{$clean1}</h1></div>");
+				$template->appendXML("<br />");
+				$template->appendXML("<div class = 'content'><p>{$clean2}</p></div>");
+				$template->appendXML("<br />");
+				$template->appendXML("<div class = 'tomb_image'><img src='{$clean3}'/></div>");
+				$template->appendXML("<br />");
+				/*$template->appendXML("<br />");
 					echo 'Large title';
-				} else if ($clean1 === 'Medium_Title'){
-				   $template->appendXML("<div class = '{$clean1}'><h2>{$clean2}</h2></div>");
+				} else if ($clean1 === 'content'){
+				   $template->appendXML("<div class = '{$clean1}'><p>{$clean2}</p></div>");
 				   $template->appendXML("<br />");
 					echo 'Med title';
 				} else if ($clean1 === 'Small_Title'){
@@ -53,7 +60,7 @@
 				   $template->appendXML("<div class = '{$clean1}'><p>{$clean2}</p></div>");
 				   $template->appendXML("<br />");
 					echo "Doesn't seem like anything to me";
-				}
+				}*/
 				
 				
 				$body->appendChild($template);

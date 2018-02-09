@@ -1,10 +1,11 @@
 var map,currLocation;
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 43.0861, lng: -77.6705},
-		zoom: 16
+		center: {lat: 43.129519, lng: -77.639381},
+		zoom: 35
 	});
 	var infoWindow = new google.maps.InfoWindow;
+	console.log("evo me init");
 
 	// Try HTML5 geolocation.
 	if (navigator.geolocation) {
@@ -51,20 +52,34 @@ function initMap() {
 			infowincontent.appendChild(document.createElement('br'));
 
 			var text = document.createElement('text');
-			text.textContent = content;
+			text.textContent = summary;
 			infowincontent.appendChild(text);
 			var pin = new google.maps.Marker({
 				map: map,
 				position: point
 			});
+			
+			
+				
+			
 			pin.addListener('click', function() {
 				infoWindow.setContent(infowincontent);
 				infoWindow.open(map, pin);
+				loadSelectedPin(name);
 			});
 		});
 	});
 }
 
+function loadSelectedPin(pinName) {
+				var element = document.getElementById("pin_content");
+				//console.log($.get("assets/php/fillDynamicPinContent.php?name=" + pinName));
+				var dataLoaded = $.ajax({type: "GET", url: "assets/php/fillDynamicPinContent.php?name=" + pinName, async: false}).responseText;
+				var $pc = $( "#pin_content" );
+				var html = $.parseHTML(dataLoaded);
+				$pc.empty().append( html );
+				}
+				
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 	infoWindow.setPosition(pos);
 	infoWindow.setContent(browserHasGeolocation ?
